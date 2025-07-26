@@ -46,6 +46,14 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
+    // Set up the lot size preset buttons
+    const lotButtons = document.querySelectorAll('.lot-btn');
+    lotButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.getElementById('lotSize').value = this.dataset.value;
+        });
+    });
+    
     // Calculate profitability
     document.getElementById('calculateProfitability').addEventListener('click', function() {
         const initialBalance = parseFloat(document.getElementById('initialBalance').value);

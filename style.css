@@ -156,6 +156,28 @@ button:hover {
     background-color: #e0e0e0;
 }
 
+.lot-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.lot-buttons {
+    display: flex;
+    gap: 5px;
+}
+
+.lot-btn {
+    padding: 5px 10px;
+    font-size: 14px;
+    background-color: #f0f0f0;
+    color: #333;
+}
+
+.lot-btn:hover {
+    background-color: #e0e0e0;
+}
+
 .trade-summary {
     width: 100%;
 }
