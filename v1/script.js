@@ -74,6 +74,9 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
+        // Calculate lot size multiplier
+        const lotMultiplier = lotSize * 10; // 0.01 lot = $0.1, 0.1 lot = $1, 1 lot = $10
+        
         // Calculate expected value per trade
         const winRate = winPercentage / 100;
         const lossRate = 1 - winRate;
@@ -90,18 +93,20 @@ document.addEventListener('DOMContentLoaded', function() {
         let winTrades = Math.round(numberOfTrades * winRate);
         let lossTrades = numberOfTrades - winTrades;
         
-        // Simulate trades in sequence
+        // Simulate trades in sequence, factoring in lot size
         for (let i = 0; i < numberOfTrades; i++) {
             const isWinTrade = i < winTrades;
             const tradeRiskAmount = currentBalance * (riskPerTrade / 100);
             
             if (isWinTrade) {
                 const tradeRewardAmount = tradeRiskAmount * riskRewardRatio;
-                currentBalance += tradeRewardAmount;
-                totalProfit += tradeRewardAmount;
+                const adjustedReward = tradeRewardAmount * (lotMultiplier / 10); // Adjust reward based on lot size
+                currentBalance += adjustedReward;
+                totalProfit += adjustedReward;
             } else {
-                currentBalance -= tradeRiskAmount;
-                totalProfit -= tradeRiskAmount;
+                const adjustedRisk = tradeRiskAmount * (lotMultiplier / 10); // Adjust risk based on lot size
+                currentBalance -= adjustedRisk;
+                totalProfit -= adjustedRisk;
             }
         }
         
