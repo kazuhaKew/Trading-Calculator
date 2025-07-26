@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading Calculator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Trading Calculator</h1>
+        
+        
+        <div class="calculator-section">
+            <h2>Profit/Loss Calculator</h2>
+            <div class="calculator-form">
+                <div class="form-group">
+                    <label for="positionSize">Position Size:</label>
+                    <input type="number" id="positionSize" placeholder="Enter position size">
+                </div>
+                <div class="form-group">
+                    <label for="entryPricePL">Entry Price:</label>
+                    <input type="number" id="entryPricePL" placeholder="Enter entry price" step="0.0001">
+                </div>
+                <div class="form-group">
+                    <label for="exitPrice">Exit Price:</label>
+                    <input type="number" id="exitPrice" placeholder="Enter exit price" step="0.0001">
+                </div>
+                <button id="calculatePL">Calculate Profit/Loss</button>
+                <div class="result" id="profitLossResult"></div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
