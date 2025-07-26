@@ -74,20 +74,42 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        // Calculate expected profit/loss
+        // Run simulation with detailed tracking
         let finalBalance = initialBalance;
+        let winCount = 0;
+        let tradeLog = [];
+        
         for (let i = 0; i < numberOfTrades; i++) {
             const tradeRiskAmount = finalBalance * riskPerTrade;
             const tradeRewardAmount = tradeRiskAmount * riskRewardRatio;
             
-            // Determine if the trade is a win or loss based on win rate
-            if (Math.random() < winRate) {
+            // Use specific seed based on current time and trade number to ensure variation
+            const randomValue = Math.random();
+            const isWin = randomValue < winRate;
+            
+            let tradeResult;
+            if (isWin) {
                 // Win
                 finalBalance += tradeRewardAmount;
+                winCount++;
+                tradeResult = {
+                    tradeNumber: i + 1,
+                    result: 'Win',
+                    amount: `+$${tradeRewardAmount.toFixed(2)}`,
+                    balanceAfter: finalBalance.toFixed(2)
+                };
             } else {
                 // Loss
                 finalBalance -= tradeRiskAmount;
+                tradeResult = {
+                    tradeNumber: i + 1,
+                    result: 'Loss',
+                    amount: `-$${tradeRiskAmount.toFixed(2)}`,
+                    balanceAfter: finalBalance.toFixed(2)
+                };
             }
+            
+            tradeLog.push(tradeResult);
             
             // If account is wiped out, stop calculations
             if (finalBalance <= 0) {
@@ -98,14 +120,37 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const profit = finalBalance - initialBalance;
         const profitPercentage = (profit / initialBalance) * 100;
+        const actualWinRate = (winCount / tradeLog.length) * 100;
         
-        let resultText;
+        // Build the result HTML
+        let resultHTML = '<div class="trade-summary">';
+        
         if (profit >= 0) {
-            resultText = `Ожидаемая прибыль: $${profit.toFixed(2)} (${profitPercentage.toFixed(2)}%)`;
+            resultHTML += `<h3>Ожидаемая прибыль: $${profit.toFixed(2)} (${profitPercentage.toFixed(2)}%)</h3>`;
         } else {
-            resultText = `Ожидаемый убыток: $${Math.abs(profit).toFixed(2)} (${Math.abs(profitPercentage).toFixed(2)}%)`;
+            resultHTML += `<h3>Ожидаемый убыток: $${Math.abs(profit).toFixed(2)} (${Math.abs(profitPercentage).toFixed(2)}%)</h3>`;
         }
         
-        document.getElementById('profitabilityResult').textContent = resultText;
+        resultHTML += `<p>Начальный баланс: $${initialBalance.toFixed(2)}</p>`;
+        resultHTML += `<p>Конечный баланс: $${finalBalance.toFixed(2)}</p>`;
+        resultHTML += `<p>Фактический % выигрышей: ${actualWinRate.toFixed(1)}% (${winCount} из ${tradeLog.length})</p>`;
+        
+        // Add a sample of trades (to keep it manageable)
+        const maxTradesShown = Math.min(10, tradeLog.length);
+        resultHTML += `<details>
+            <summary>Показать детали сделок (${maxTradesShown} из ${tradeLog.length})</summary>
+            <div class="trade-details">`;
+        
+        for (let i = 0; i < maxTradesShown; i++) {
+            const trade = tradeLog[i];
+            const colorClass = trade.result === 'Win' ? 'win-trade' : 'loss-trade';
+            resultHTML += `<div class="trade-item ${colorClass}">
+                #${trade.tradeNumber}: ${trade.result} ${trade.amount} → Баланс: $${trade.balanceAfter}
+            </div>`;
+        }
+        
+        resultHTML += '</div></details></div>';
+        
+        document.getElementById('profitabilityResult').innerHTML = resultHTML;
     });
 });

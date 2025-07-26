@@ -156,6 +156,52 @@ button:hover {
     background-color: #e0e0e0;
 }
 
+.trade-summary {
+    width: 100%;
+}
+
+.trade-summary h3 {
+    margin-bottom: 10px;
+}
+
+.trade-summary p {
+    margin-bottom: 5px;
+}
+
+.trade-details {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid #eee;
+    padding: 10px;
+    border-radius: 4px;
+}
+
+.trade-item {
+    padding: 5px;
+    border-radius: 3px;
+}
+
+.win-trade {
+    background-color: rgba(46, 204, 113, 0.1);
+    border-left: 3px solid #2ecc71;
+}
+
+.loss-trade {
+    background-color: rgba(231, 76, 60, 0.1);
+    border-left: 3px solid #e74c3c;
+}
+
+details summary {
+    cursor: pointer;
+    margin-top: 10px;
+    color: #3498db;
+    font-weight: 600;
+}
+
 @media (max-width: 768px) {
     .container {
         padding: 10px;
