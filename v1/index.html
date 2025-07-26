@@ -39,6 +39,62 @@
                 <div class="result" id="profitLossResult"></div>
             </div>
         </div>
+        
+        <div class="calculator-section">
+            <h2>Калькулятор торговой доходности</h2>
+            <div class="calculator-description">
+                Калькулятор доходности торговли — ценный инструмент для трейдеров, позволяющий оценить потенциальную доходность сделок. Этот инструмент учитывает различные параметры торговли, обеспечивая точный расчет прибыли или убытка.
+            </div>
+            <div class="calculator-form">
+                <div class="form-group">
+                    <label for="initialBalance">Начальный баланс:</label>
+                    <div class="balance-controls">
+                        <input type="number" id="initialBalance" placeholder="Например: 1000$" step="100">
+                        <div class="balance-buttons">
+                            <button class="balance-btn" data-value="1000">1000$</button>
+                            <button class="balance-btn" data-value="5000">5000$</button>
+                            <button class="balance-btn" data-value="10000">10000$</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="lotSize">Размер лота:</label>
+                    <div class="lot-controls">
+                        <input type="number" id="lotSize" placeholder="Размер лота" step="0.01" value="0.01">
+                        <div class="lot-buttons">
+                            <button class="lot-btn" data-value="0.01">0.01 (0.1$)</button>
+                            <button class="lot-btn" data-value="0.1">0.1 (1$)</button>
+                            <button class="lot-btn" data-value="1">1.0 (10$)</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="numberOfTrades">Количество сделок (1-100):</label>
+                    <input type="number" id="numberOfTrades" placeholder="Например: 50" min="1" max="100" value="50">
+                </div>
+                <div class="form-group">
+                    <label for="riskPerTrade">Риск на сделку (%):</label>
+                    <input type="number" id="riskPerTrade" placeholder="Например: 2%" step="0.1" value="2">
+                </div>
+                <div class="form-group">
+                    <label for="riskRewardRatio">Соотношение риска и прибыли:</label>
+                    <div class="ratio-controls">
+                        <input type="number" id="riskRewardRatio" placeholder="Например: 2" step="0.1" value="2">
+                        <div class="ratio-buttons">
+                            <button class="ratio-btn" data-value="1">1:1</button>
+                            <button class="ratio-btn" data-value="2">1:2</button>
+                            <button class="ratio-btn" data-value="3">1:3</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="winPercentage">Процент выигрышных сделок (%):</label>
+                    <input type="number" id="winPercentage" placeholder="Например: 50%" min="0" max="100" value="50">
+                </div>
+                <button id="calculateProfitability">Рассчитать</button>
+                <div class="result" id="profitabilityResult"></div>
+            </div>
+        </div>
     </div>
     
     <script src="script.js"></script>
