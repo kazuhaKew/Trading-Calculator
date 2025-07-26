@@ -38,6 +38,14 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
+    // Set up the balance preset buttons
+    const balanceButtons = document.querySelectorAll('.balance-btn');
+    balanceButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.getElementById('initialBalance').value = this.dataset.value;
+        });
+    });
+    
     // Calculate profitability
     document.getElementById('calculateProfitability').addEventListener('click', function() {
         const initialBalance = parseFloat(document.getElementById('initialBalance').value);

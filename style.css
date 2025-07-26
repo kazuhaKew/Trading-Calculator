@@ -134,6 +134,28 @@ button:hover {
     background-color: #e0e0e0;
 }
 
+.balance-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.balance-buttons {
+    display: flex;
+    gap: 5px;
+}
+
+.balance-btn {
+    padding: 5px 10px;
+    font-size: 14px;
+    background-color: #f0f0f0;
+    color: #333;
+}
+
+.balance-btn:hover {
+    background-color: #e0e0e0;
+}
+
 @media (max-width: 768px) {
     .container {
         padding: 10px;
