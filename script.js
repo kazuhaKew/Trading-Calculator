@@ -57,13 +57,15 @@ document.addEventListener('DOMContentLoaded', function() {
     // Calculate profitability
     document.getElementById('calculateProfitability').addEventListener('click', function() {
         const initialBalance = parseFloat(document.getElementById('initialBalance').value);
+        const lotSize = parseFloat(document.getElementById('lotSize').value);
         const numberOfTrades = parseInt(document.getElementById('numberOfTrades').value);
         const riskPerTrade = parseFloat(document.getElementById('riskPerTrade').value) / 100;
         const riskRewardRatio = parseFloat(document.getElementById('riskRewardRatio').value);
         const winRate = parseFloat(document.getElementById('winRate').value) / 100;
+        const isExpectedValueMode = document.getElementById('expectedValueMode').checked;
         
         // Validation
-        if (isNaN(initialBalance) || isNaN(numberOfTrades) || isNaN(riskPerTrade) || 
+        if (isNaN(initialBalance) || isNaN(lotSize) || isNaN(numberOfTrades) || isNaN(riskPerTrade) || 
             isNaN(riskRewardRatio) || isNaN(winRate)) {
             document.getElementById('profitabilityResult').textContent = 
                 'Пожалуйста, заполните все поля корректными числами';
@@ -82,47 +84,105 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        // Run simulation with detailed tracking
-        let finalBalance = initialBalance;
-        let winCount = 0;
-        let tradeLog = [];
+        let finalBalance, tradeLog, winCount;
         
-        for (let i = 0; i < numberOfTrades; i++) {
-            const tradeRiskAmount = finalBalance * riskPerTrade;
-            const tradeRewardAmount = tradeRiskAmount * riskRewardRatio;
+        if (isExpectedValueMode) {
+            // Expected value calculation (deterministic)
+            const lotValue = lotSize * 10; // Converting lot size to dollar value (0.01 → 0.1$, 0.1 → 1$, 1 → 10$)
+            const riskAmountPerTrade = initialBalance * riskPerTrade;
+            const rewardAmountPerTrade = riskAmountPerTrade * riskRewardRatio;
             
-            // Use specific seed based on current time and trade number to ensure variation
-            const randomValue = Math.random();
-            const isWin = randomValue < winRate;
+            // Expected value formula: EV = (win_rate * reward) - ((1 - win_rate) * risk)
+            const expectedValuePerTrade = (winRate * rewardAmountPerTrade) - ((1 - winRate) * riskAmountPerTrade);
+            const totalExpectedValue = expectedValuePerTrade * numberOfTrades;
             
-            let tradeResult;
-            if (isWin) {
-                // Win
-                finalBalance += tradeRewardAmount;
-                winCount++;
-                tradeResult = {
-                    tradeNumber: i + 1,
+            finalBalance = initialBalance + totalExpectedValue;
+            
+            // Calculate expected wins based on win rate (for display purposes)
+            winCount = Math.round(numberOfTrades * winRate);
+            
+            // Create a deterministic trade log for display
+            tradeLog = [];
+            let runningBalance = initialBalance;
+            
+            // First, show expected winning trades
+            for (let i = 0; i < winCount; i++) {
+                const tradeNumber = i + 1;
+                const tradeRiskAmount = runningBalance * riskPerTrade;
+                const tradeRewardAmount = tradeRiskAmount * riskRewardRatio;
+                runningBalance += tradeRewardAmount;
+                
+                tradeLog.push({
+                    tradeNumber: tradeNumber,
                     result: 'Win',
                     amount: `+$${tradeRewardAmount.toFixed(2)}`,
-                    balanceAfter: finalBalance.toFixed(2)
-                };
-            } else {
-                // Loss
-                finalBalance -= tradeRiskAmount;
-                tradeResult = {
-                    tradeNumber: i + 1,
-                    result: 'Loss',
-                    amount: `-$${tradeRiskAmount.toFixed(2)}`,
-                    balanceAfter: finalBalance.toFixed(2)
-                };
+                    balanceAfter: runningBalance.toFixed(2)
+                });
             }
             
-            tradeLog.push(tradeResult);
+            // Then, show expected losing trades
+            for (let i = winCount; i < numberOfTrades; i++) {
+                const tradeNumber = i + 1;
+                const tradeRiskAmount = runningBalance * riskPerTrade;
+                runningBalance -= tradeRiskAmount;
+                
+                tradeLog.push({
+                    tradeNumber: tradeNumber,
+                    result: 'Loss',
+                    amount: `-$${tradeRiskAmount.toFixed(2)}`,
+                    balanceAfter: runningBalance.toFixed(2)
+                });
+                
+                if (runningBalance <= 0) {
+                    runningBalance = 0;
+                    break;
+                }
+            }
             
-            // If account is wiped out, stop calculations
-            if (finalBalance <= 0) {
-                finalBalance = 0;
-                break;
+        } else {
+            // Simulation mode (probabilistic)
+            // Run simulation with detailed tracking
+            finalBalance = initialBalance;
+            winCount = 0;
+            tradeLog = [];
+            
+            for (let i = 0; i < numberOfTrades; i++) {
+                const tradeRiskAmount = finalBalance * riskPerTrade;
+                const tradeRewardAmount = tradeRiskAmount * riskRewardRatio;
+                
+                // Use random number to determine win/loss
+                const randomValue = Math.random();
+                const isWin = randomValue < winRate;
+                
+                let tradeResult;
+                if (isWin) {
+                    // Win
+                    finalBalance += tradeRewardAmount;
+                    winCount++;
+                    tradeResult = {
+                        tradeNumber: i + 1,
+                        result: 'Win',
+                        amount: `+$${tradeRewardAmount.toFixed(2)}`,
+                        balanceAfter: finalBalance.toFixed(2)
+                    };
+                } else {
+                    // Loss
+                    finalBalance -= tradeRiskAmount;
+                    tradeResult = {
+                        tradeNumber: i + 1,
+                        result: 'Loss',
+                        amount: `-$${tradeRiskAmount.toFixed(2)}`,
+                        balanceAfter: finalBalance.toFixed(2)
+                    };
+                }
+                
+                tradeLog.push(tradeResult);
+                
+                // If account is wiped out, stop calculations
+                if (finalBalance <= 0) {
+                    finalBalance = 0;
+                    break;
+                }
             }
         }
         
@@ -140,8 +200,10 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         resultHTML += `<p>Начальный баланс: $${initialBalance.toFixed(2)}</p>`;
+        resultHTML += `<p>Размер лота: ${lotSize} (${(lotSize * 10).toFixed(2)}$)</p>`;
         resultHTML += `<p>Конечный баланс: $${finalBalance.toFixed(2)}</p>`;
-        resultHTML += `<p>Фактический % выигрышей: ${actualWinRate.toFixed(1)}% (${winCount} из ${tradeLog.length})</p>`;
+        resultHTML += `<p>Режим расчета: ${isExpectedValueMode ? 'Ожидаемая стоимость' : 'Симуляция'}</p>`;
+        resultHTML += `<p>Процент выигрыша: ${actualWinRate.toFixed(1)}% (${winCount} из ${tradeLog.length})</p>`;
         
         // Add a sample of trades (to keep it manageable)
         const maxTradesShown = Math.min(10, tradeLog.length);

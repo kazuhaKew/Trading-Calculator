@@ -99,6 +99,15 @@
                     <label for="winRate">Процент выигрыша (%):</label>
                     <input type="number" id="winRate" placeholder="Процент успешных сделок" min="0" max="100" value="50">
                 </div>
+                <div class="form-group">
+                    <label>Режим расчёта:</label>
+                    <div class="radio-group">
+                        <input type="radio" id="expectedValueMode" name="calculationMode" value="expected" checked>
+                        <label for="expectedValueMode">Ожидаемая стоимость</label>
+                        <input type="radio" id="simulationMode" name="calculationMode" value="simulation">
+                        <label for="simulationMode">Симуляция</label>
+                    </div>
+                </div>
                 <button id="calculateProfitability">Рассчитать</button>
                 <div class="result" id="profitabilityResult"></div>
             </div>
