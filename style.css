@@ -89,6 +89,23 @@ button:hover {
     align-items: center;
 }
 
+.radio-group {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.radio-group input[type="radio"] {
+    margin-right: 5px;
+    cursor: pointer;
+}
+
+.radio-group label {
+    font-weight: normal;
+    margin-bottom: 0;
+    cursor: pointer;
+}
+
 @media (max-width: 768px) {
     .container {
         padding: 10px;
